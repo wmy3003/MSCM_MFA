@@ -34,11 +34,6 @@ def logger_config(log_path):
     return loggerr
 
 def save_checkpoint(state, save_path):
-    '''
-        Save the current model.
-        If the model is the best model since beginning of the training
-        it will be copy
-    '''
     logger.info('\t Saving to {}'.format(save_path))
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
@@ -147,11 +142,7 @@ if __name__ == '__main__':
         os.makedirs(config.save_path)
 
     logger = logger_config(log_path=config.logger_path)
-
-    if config.task_name == "Synapse":
-        filelists = os.listdir(config.train_dataset)
-    else:
-        filelists = os.listdir(config.train_dataset+"images")
+    filelists = os.listdir(config.train_dataset+"images")
 
     filelists = np.array(filelists)
     kfold = config.kfold
