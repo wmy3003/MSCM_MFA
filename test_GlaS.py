@@ -95,7 +95,7 @@ if __name__ == '__main__':
         if config.task_name is "GlaS":
             test_num = 80
             model_type = config.model_name
-            model_path = "/home/wangmeiyun/projects/UDTransNet-segman/GlaS_kfold/"+model_type+"/"+test_session+"/models/fold_"+str(i+1)+"/best_model-"+model_type+".pth.tar"
+            model_path = "/home/wmy/projects/MSCM_MFA/GlaS_kfold/"+model_type+"/"+test_session+"/models/fold_"+str(i+1)+"/best_model-"+model_type+".pth.tar"
 
         save_path    = config.task_name +'/'+ model_type +'/' + test_session + '/'
 
@@ -219,6 +219,7 @@ if __name__ == '__main__':
     if config.n_labels > 1:
         np.set_printoptions(formatter={'float': '{:.2f}'.format})
         print ("dice class:",dice_class_mean)
+
 
 
 
