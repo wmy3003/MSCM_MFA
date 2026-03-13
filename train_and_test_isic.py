@@ -82,7 +82,6 @@ class Logger(object):
 
 def train(train_loader, model, scheduler, optimizer, args, epoch):
     losses = AverageMeter()
-    # current_loss_f = "CE_softdice"       # softdice or CE_softdice
 
     model.train()
     for step, (x, y) in tqdm(enumerate(train_loader), total=len(train_loader)):
@@ -90,10 +89,6 @@ def train(train_loader, model, scheduler, optimizer, args, epoch):
         target = y.float().cuda()
 
         out_f = model(image)
-        """
-        path_1: lesion          foreground
-        path_2: background      background
-        """
         # ---- loss function ----
         if isinstance(out_f, list) or isinstance(out_f, tuple):
             loss = structure_loss(out_f, target)
@@ -429,7 +424,6 @@ def main(args, val_acc_log, test_acc_log):
                 torch.save(state, filename)
 
     print('Training Done! Start testing')
-    # test_isic(ph2_img, model, args, test_acc_log, "PH2", save_img=False)
     test_isic(testloader, model, args, test_acc_log, "ISIC2018", save_img=args.save_img)
 
     print('Testing Done!')
@@ -437,27 +431,16 @@ def main(args, val_acc_log, test_acc_log):
 
 if __name__ == '__main__':
 
-    """
-    This project supports the following models:
-    compared methods:
-        Methods                                                       Params    Flops                              
-        I2U_Net_L                                                     29.65     9.36                               
-        I2U_Net_M                                                     27.49     8.26 
-        I2U_Net_S                                                     7.03      2.74           
-    """
-
-    # setup_seed(200)                                            # gpu-id
-
     assert LooseVersion(torch.__version__) >= LooseVersion('0.4.0'), 'PyTorch>=0.4.0 is required'
     parser = argparse.ArgumentParser(description='Comprehensive attention network for biomedical Dataset')
 
-    parser.add_argument('--id', default="VMUNet",
+    parser.add_argument('--id', default="MSCM_MFA",
                         help='I2U_Net')  # Select a loaded model name
 
     # Path related arguments
-    parser.add_argument('--root_path', default='/home/wangmeiyun/projects/I2U-Net-main/Datasets/ISIC2018_npy_224_224',
+    parser.add_argument('--root_path', default='/home/wmy/projects/MSCM_MFA/Datasets/ISIC2018_npy_224_224',
                         help='root directory of training data')  # storage path of ISIC2018 dataset
-    parser.add_argument('--ckpt', default='./saved_models_Mamba_VMUNet/',
+    parser.add_argument('--ckpt', default='./saved_models_MSCM_MFA/',
                         help='folder to output checkpoints')  # The folder in which the trained model is saved
     parser.add_argument('--transform', default='C', type=str,
                         help='which ISIC2018_transform to choose')
@@ -471,11 +454,6 @@ if __name__ == '__main__':
 
     parser.add_argument('--seed', type=int, default=1234, help='random seed')  # default 1234
     parser.add_argument('--save_img', type=str, default=True, help='whether save segmentation result')
-
-    parser.add_argument('--root_ph2', default='/home/wuhan/MapleFigure/I2U-Net-main/Datasets/',
-                        help='root directory of external validation')  # storage path of ph2 data
-    parser.add_argument('--root _ph2_list', default='/home/wuhan/MapleFigure/I2U-Net-main/Datasets/ph2_list.txt',
-                        help='image list of external validation')  # storage path of ph2 samples list
 
     # optimization related arguments
     parser.add_argument('--epochs', type=int, default=200, metavar='N',
@@ -518,3 +496,4 @@ if __name__ == '__main__':
         args.resume = args.ckpt + '/' + str(args.start_epoch) + '_' + args.data + '_checkpoint.pth.tar'
 
     main(args, val_acc_log, test_acc_log)
+
